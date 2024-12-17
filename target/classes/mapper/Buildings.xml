@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.app.mapper.BuildingsMapper">
+    <select id="getBuildingsList" resultType="com.example.app.model.vo.BuildingsVO">
+        select ly.field0002 id,
+               ly.field0001 name
+        from dbo.formmain_1119 ly
+                 left join formmain_1118 yq on yq.field0005 = #{id}
+        where ly.field0009 = yq.field0001
+    </select>
+    <select id="getBuildingsOverview" resultType="com.example.app.model.vo.BuildingsOverviewVO">
+        select sum(fj.field0009)                                                                    totalArea,
+               count(*)                                                                             rooms,
+               sum(case when fj.field0008 = '1465873900838469704' then fj.field0009 else 0 end)  as rentedArea,
+               sum(case when fj.field0008 = '-8479296623955916709' then fj.field0009 else 0 end) as vacantArea,
+               count(distinct ht.field0005)                                                      as customersNumber,
+               avg(htmx.field0028 / fj.field0009)                                                as averagePrice
+        from dbo.formmain_1119 ly
+                 left join dbo.formmain_1124 fj on ly.field0002 = fj.field0005
+                 left join formson_1227 htmx on htmx.field0025 = fj.field0001
+                 left join formmain_1226 ht on ht.ID = htmx.formmain_id and
+                                               ht.field0155 in ('5650839430308054863', '3674377924752654347')
+        where ly.field0002 = #{id}
+          and fj.field0005 = ly.field0002
+          and fj.field0008 != '-5584945763428056712'
+    </select>
+    <!--        <select id="getBuildingsList" resultType="com.example.app.model.vo.BuildingsVO" resultMap="getBuildingsListMap">-->
+    <!--            select ly.field0002                                                                         id,-->
+    <!--                   ly.field0001                                                                         name,-->
+    <!--                   sum(fj.field0009)                                                                    totalArea,-->
+    <!--                   count(*)                                                                             romms,-->
+    <!--                   sum(case when fj.field0008 = '1465873900838469704' then fj.field0009 else 0 end)  as rentedArea,-->
+    <!--                   sum(case when fj.field0008 = '-8479296623955916709' then fj.field0009 else 0 end) as vacantArea,-->
+    <!--                   count(distinct ht.field0005)                                                      as customersNumber,-->
+    <!--                   avg(htmx.field0028 / fj.field0009)                                                as averagePrice-->
+    <!--            from dbo.formmain_1119 ly-->
+    <!--                     left join dbo.formmain_1124 fj on ly.field0002 = fj.field0005-->
+    <!--                     left join formmain_1118 yq on yq.field0005 = #{id}-->
+    <!--                     left join formson_1227 htmx on htmx.field0025 = fj.field0001-->
+    <!--                     left join formmain_1226 ht on ht.ID = htmx.formmain_id and ht.field0155 = '5650839430308054863'-->
+    <!--            where yq.field0001 = ly.field0009-->
+    <!--              and fj.field0005 = ly.field0002-->
+    <!--              and fj.field0008 != '-5584945763428056712'-->
+    <!--            group by ly.field0001, ly.field0002;-->
+    <!--        </select>-->
+
+
+    <resultMap id="getBuildingsFloorInfoByIdMap" type="com.example.app.model.entity.FloorInfo">
+        <collection property="roomInfos" ofType="com.example.app.model.entity.FloorInfo"
+                    select="getRoomListByFloorId"
+                    column="{id=id}">
+        </collection>
+    </resultMap>
+
+    <select id="getBuildingsFloorInfoById" resultMap="getBuildingsFloorInfoByIdMap">
+        select lc.field0026 as id, lc.field0023 as floorName, sum(fj.field0009) as floorArea
+        from formson_1121 lc
+                 left join formmain_1119 ly on lc.formmain_id = ly.ID
+                 left join dbo.formmain_1124 fj on lc.field0026 = fj.field0061
+        where ly.field0002 = #{id}
+        group by lc.field0023, lc.field0026
+        order by lc.field0023 DESC
+    </select>
+
+    <select id="getRoomListByFloorId" resultType="com.example.app.model.entity.RoomInfo">
+        select fj.field0001 as id, fj.field0002 as roomNumber, fj.field0009 as area, kh.field0002
+        from formmain_1124 fj
+                 left join formson_1227 htmx on htmx.field0025 = fj.field0001
+                 left join formmain_1226 ht on ht.ID = htmx.formmain_id
+                 left join formson_1447 khmx on khmx.field0124 = htmx.field0025
+                 left join formmain_1184 kh on kh.ID = khmx.formmain_id
+        where fj.field0061 = #{id}
+          and fj.field0008 != '-5584945763428056712'
+    </select>
+
+</mapper>

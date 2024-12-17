@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.app.mapper.RoomMapper">
+    <!--    <select id="getRoomListByFloorId" resultType="com.example.app.model.entity.RoomInfo">-->
+    <!--        select fj.field0001 as id, fj.field0002 as roomNumber, fj.field0009 as area, kh.field0002-->
+    <!--        from formmain_1124 fj-->
+    <!--                 left join formson_1227 htmx on htmx.field0025 = fj.field0001-->
+    <!--                 left join formmain_1226 ht on ht.ID = htmx.formmain_id-->
+    <!--                 left join formson_1447 khmx on khmx.field0124 = htmx.field0025-->
+    <!--                 left join formmain_1184 kh on kh.ID = khmx.formmain_id-->
+    <!--        where fj.field0061 = #{id}-->
+    <!--          and fj.field0008 != '-5584945763428056712'-->
+    <!--    </select>-->
+    <select id="getRoomInfoByRoomId" resultType="com.example.app.model.entity.RoomDetails">
+        select fj.field0001                                                         as id,
+               fj.field0002                                                         as roomNumber,
+               fj.field0061                                                         as floorId,
+               ly.field0001                                                         as buildingsName,
+               fj.field0009                                                         as area,
+               (case when fj.field0011 = enum.ID then enum.SHOWVALUE else '' end)   as renovation,
+               fj.field0013                                                         as storeyHeight,
+               fj.field0014                                                         as rentPrice,
+               fj.field0015                                                         as propertyFees,
+               fj.field0017                                                         as remark,
+               fj.field0030                                                         as parkId,
+               (case when fj.field0019 = enum1.ID then enum1.SHOWVALUE else '' end) as airConditioning,
+               (case when fj.field0070 = enum2.ID then enum2.SHOWVALUE else '' end) as roomPurpose,
+               (case when fj.field0008 = enum3.ID then enum3.SHOWVALUE else '' end) as status
+        from formmain_1124 fj
+                 left join formmain_1119 ly on ly.field0002 = fj.field0005
+                 left join dbo.CTP_ENUM_ITEM enum on fj.field0011 = enum.ID
+                 left join dbo.CTP_ENUM_ITEM enum1 on fj.field0019 = enum1.ID
+                 left join dbo.CTP_ENUM_ITEM enum2 on fj.field0070 = enum2.ID
+                 left join dbo.CTP_ENUM_ITEM enum3 on fj.field0008 = enum3.ID
+        where fj.field0001 = #{id}
+    </select>
+</mapper>

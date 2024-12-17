@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.app.mapper.ClientIdMapper">
+    <select id="getClientReserveInfo" resultType="com.example.app.model.entity.ClientReserveInfo">
+        select kh.field0002 clientName, khmx.field0127 startTime, khmx.field0128 entTime, enum.SHOWVALUE status
+        from formson_1447 khmx
+                 left join formmain_1184 kh on kh.ID = khmx.formmain_id
+                 left join dbo.CTP_ENUM_ITEM enum on khmx.field0129 = enum.ID
+        where khmx.field0124 = #{id}
+        order by khmx.field0127 DESC
+    </select>
+</mapper>

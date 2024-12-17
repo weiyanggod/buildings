@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.app.mapper.AgreementMapper">
+    <select id="getAgreementInfo" resultType="com.example.app.model.entity.AgreementInfo">
+        select ht.field0001                                             as id,
+               ht.field0003                                             as agreementNumber,
+               ht.field0005                                             as clientId,
+               COALESCE(stkh.field0002, grkh.field0003, wbkh.field0003) as clientName,
+               enum.SHOWVALUE                                           as status,
+               ht.field0010                                             as startTime,
+               ht.field0120                                             as endTime
+        from formson_1227 htmx
+                 left join formmain_1226 ht on ht.ID = htmx.formmain_id
+                 left join formmain_1184 stkh on stkh.field0001 = ht.field0005
+                 left join formmain_1141 grkh on grkh.field0002 = ht.field0005
+                 left join formmain_1166 wbkh on wbkh.field0001 = ht.field0005
+                 left join CTP_ENUM_ITEM enum on ht.field0155 = enum.ID
+        where htmx.field0025 = #{id}
+        order by ht.field0010 DESC
+    </select>
+    <select id="getRoomEndTime" resultType="string">
+        select ht.field0120 as endDate
+        from formson_1227 htmx
+                 left join formmain_1226 ht on ht.ID = htmx.formmain_id
+                 left join formmain_1124 fj on fj.field0001 = #{id}
+                 left join CTP_ENUM_ITEM enum on enum.ID = fj.field0008
+        where htmx.field0025 = #{id}
+          and fj.field0008 = '1465873900838469704'
+          and ht.field0155 = '5650839430308054863'
+
+    </select>
+    <select id="getRoomStatus" resultType="string">
+        select enum.SHOWVALUE as status
+        from formmain_1124 fj
+                 left join CTP_ENUM_ITEM enum on enum.ID = fj.field0008
+        where fj.field0001 = 'FJ00001345'
+    </select>
+</mapper>
