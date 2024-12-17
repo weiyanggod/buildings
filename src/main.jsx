@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import { router } from './router'
 import { store } from './store/index.js'
 
-import './index.css'
+import './index.less'
 import 'virtual:uno.css'
 
 createRoot(document.getElementById('root')).render(
