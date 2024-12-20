@@ -39,11 +39,13 @@ httpService.interceptors.response.use(
 
 // 封装常用的请求方法
 const get = ({ url, params, headers }) =>
-  httpService.get(url, params, { headers })
-const post = ({ url, data, headers }) => {
-  return httpService.post(url, data, { headers })
-}
-const put = ({ url, data, headers }) => httpService.put(url, data, { headers })
+  httpService.get(url, { params, headers })
+
+const post = ({ url, data, headers }) =>
+  httpService.post(url, { ...data, headers })
+
+const put = ({ url, data, headers }) =>
+  httpService.put(url, { ...data, headers })
 const del = ({ url, headers }) => httpService.delete(url, { headers })
 
 export default {

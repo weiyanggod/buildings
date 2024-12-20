@@ -5,7 +5,6 @@ import { getParkList, getToken } from '@/api/index.js'
 import Buildings from './component/buildings.jsx'
 import Overview from './component/overview.jsx'
 import Rooms from './component/rooms.jsx'
-import RScaleScreen from 'r-scale-screen'
 import Cookies from 'js-cookie'
 import { message } from 'antd'
 const Home = () => {
@@ -26,7 +25,7 @@ const Home = () => {
 
   useEffect(() => {
     const render = async () => {
-      // 如果登录了oa,则获取token
+      // 如果登录了oa, 则获取token
       if (Cookies.get('avatarImageUrl')) {
         const token = await getToken({
           userName: 'PMT',
@@ -58,7 +57,7 @@ const Home = () => {
   }, [])
 
   return (
-    <RScaleScreen height={911} width={1920}>
+    <div>
       {token && (
         <Page>
           <Title>
@@ -68,18 +67,20 @@ const Home = () => {
           <Card
             style={{
               width: '100%',
-              flex: '1',
+              flex: '1 1 0%',
+              display: 'flex',
+              flexDirection: 'column',
             }}
-            className='parkCard'
+            className='parkCard flex-1'
             tabList={tabList}
             activeTabKey={activeTabKey}
             onTabChange={onTabChange}>
             <Spin spinning={loading}>
-              <div className='flex w-full'>
+              <div className='flex max-h-[76vh]'>
                 <Buildings
                   id={activeTabKey || ''}
                   setBuildingsIdMethod={setBuildingsIdMethod}></Buildings>
-                <div className='ml-2 w-[85%] h-[649px] flex flex-col'>
+                <div className='ml-2 w-[85%]  flex flex-col flex-1'>
                   <Overview id={buildingsId}></Overview>
                   <Rooms
                     id={buildingsId}
@@ -93,14 +94,14 @@ const Home = () => {
         </Page>
       )}
       {!token && <Page></Page>}
-    </RScaleScreen>
+    </div>
   )
 }
 
 const Page = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 32px 40px 32px 40px;
+  padding: 16px 40px 32px 40px;
   box-sizing: border-box;
   width: 100%;
   height: 100vh;
@@ -112,7 +113,7 @@ const Page = styled.div`
 const Title = styled.div`
   height: 60px;
   display: flex;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
   img {
     width: 60px;
     height: 60px;

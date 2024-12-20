@@ -34,20 +34,20 @@ export const getFloor = (id) => {
 export const getRoomInfo = (id) => {
   return request.get({
     url: `/buildings-server/api/roomInfo`,
-    data: { id },
+    params: { id },
   })
 }
 
 export const getAgreementInfo = (id) => {
   return request.get({
     url: `/buildings-server/api/agreementInfo`,
-    data: { id },
+    params: { id },
   })
 }
 
 export const getClientReserveInfo = (id) => {
   return request.get({
     url: `/buildings-server/api/clientReserveInfo`,
-    data: { id },
+    params: { id },
   })
 }

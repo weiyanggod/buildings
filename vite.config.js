@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => {
         '^/buildings-server/api': {
           target: env.VITE_BASE_URL, // 目标地址
           changeOrigin: true,
-          // rewrite: (path) => path.replace(/^\/buildings-server\/api/, ''),
+          rewrite: (path) => path.replace(/^\/buildings-server\/api/, ''),
         },
       },
     },

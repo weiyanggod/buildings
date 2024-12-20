@@ -1,6 +1,7 @@
 import { getFloor } from '@/api/index.js'
 import { useEffect, useState } from 'react'
 import ModalFC from './modal.jsx'
+import styled from 'styled-components'
 
 const Rooms = (props) => {
   const [floorList, setFloorList] = useState([])
@@ -72,8 +73,8 @@ const Rooms = (props) => {
   ]
 
   // 获取颜色
-  const getBGI = (item) => {
-    if (!item.endTime) {
+  const getColor = (item) => {
+    if (!item.endTime || item.status !== '已签约') {
       return statusList.find((i) => item.status === i.key)
     }
 
@@ -89,6 +90,13 @@ const Rooms = (props) => {
       [dayjs().add(1, 'year').format('YYYY')]: 'nextYearNumber',
       [dayjs().add(2, 'year').format('YYYY')]: 'afterYearNumber',
       [dayjs().add(3, 'year').format('YYYY')]: 'moreYearNumber',
+    }
+
+    //判断是否大于3年
+    const diff = dayjs(endYear).diff(dayjs().add(3, 'year').format('YYYY'))
+
+    if (diff > 0) {
+      return statusList.find((i) => i.key === 'moreYearNumber')
     }
 
     const key = yearKeyMap[endYear] || ''
@@ -146,8 +154,8 @@ const Rooms = (props) => {
   }, [props.id])
 
   return (
-    <div className='mt-6 min-h-[0px] flex-1 h-full flex flex-col'>
-      <div className='flex justify-end pr-6'>
+    <div className='min-h-[0px] flex-1 h-full flex flex-col'>
+      <div className='flex justify-end pr-6 mt-3'>
         {statusList.map((item, index) => {
           return (
             <div className='flex  items-center ml-8' key={index}>
@@ -167,28 +175,34 @@ const Rooms = (props) => {
         })}
       </div>
 
-      <div className='flex-1 overflow-y-auto mt-[10px]' ref={roomListRef}>
+      <div className='flex-1 overflow-y-auto roomList pb-3' ref={roomListRef}>
         <Spin type='small' spinning={loading}>
           {floorList.map((item, index) => {
             return (
-              <div key={index}>
-                <Divider dashed style={{ borderColor: '#DCDCDC' }}></Divider>
-                <div className='flex pl-[20px] fa-75' key={index}>
-                  <div className='p-[10px] box-border mt-[15px] w-[100px]'>
+              <div key={index} style={{ marginTop: index === 0 ? '5px' : '' }}>
+                {index !== 0 ? (
+                  <Divider
+                    dashed
+                    style={{ borderColor: '#DCDCDC', margin: '5px' }}></Divider>
+                ) : (
+                  ''
+                )}
+
+                <div className={`flex pl-[20px] fa-75 `} key={index}>
+                  <div className='p-[10px] box-border  w-[100px]'>
                     <div className='text-[20px] font-600'>{item.floorName}</div>
                     <div className='text-[16px]'>{item.floorArea}m²</div>
                   </div>
                   <div className=' flex-1 flex flex-wrap ml-[50px]'>
                     {item.roomInfos.map((item, index) => {
                       return (
-                        <div
+                        <RoomCardFC
                           key={index}
                           style={{
-                            marginTop: index >= 5 ? '10px' : '15px',
-                            backgroundColor: getBGI(item).color,
+                            backgroundColor: getColor(item).color,
                           }}
                           onClick={() => clickRoom(item)}
-                          className={`ml-[20px] pos-relative cursor-pointer  w-[200px] h-[103px] border bg-[#6B7280] text-black px-[15px] py-[10px] box-border rounded-[10px]`}>
+                          className={`roomCard`}>
                           <div className='text-[16px] truncate'>
                             {item.roomNumber}
                           </div>
@@ -198,7 +212,7 @@ const Rooms = (props) => {
                           <div className='text-[12px] mt-[5px]'>
                             {item.area}m²
                           </div>
-                        </div>
+                        </RoomCardFC>
                       )
                     })}
                   </div>
@@ -218,6 +232,20 @@ const Rooms = (props) => {
     </div>
   )
 }
+
+const RoomCardFC = styled.div`
+  margin-top: 5px;
+  margin-left: 20px;
+  margin-bottom: 10px;
+  position: relative;
+  width: 200px;
+  border-width: 1px;
+  background-color: #6b7280;
+  color: #000;
+  padding: 10px 15px;
+  box-sizing: border-box;
+  border-radius: 10px;
+`
 
 Rooms.propTypes = {
   id: PropTypes.string.isRequired,

@@ -23,6 +23,7 @@ const Overview = (props) => {
   return (
     <Card
       bordered={false}
+      className='overviewCard'
       style={{ backgroundColor: '#F9FAFB', width: '100%' }}>
       <div className='flex justify-around'>
         <Statistic

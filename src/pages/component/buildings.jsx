@@ -32,8 +32,7 @@ const Buildings = (props) => {
       <Card
         style={{
           maxWidth: '15%',
-          flex: 1,
-          height: '649px',
+          flex: '1 1 0%',
           overflowY: 'auto',
           backgroundColor: '#F3F4F6',
         }}>
